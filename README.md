@@ -26,7 +26,6 @@
  - MicrosoftEdge 
  - Opera
  - Safari
- - 
 - Browsers supported by this version - mobile:
  - Google Chrome
  - Mozilla Firefox
@@ -34,4 +33,3 @@
  - Opera 
  - Safari
  - UCBrowser
- -
