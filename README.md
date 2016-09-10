@@ -17,25 +17,6 @@
  - redirects to mobile version according to the common pattern,  http://my-site-url.com -> http://m.my-site-url.com  (m. stands for mobile version)
  - creates redirection url to desktop version
  
-Installation: like any other JS library.
- 
-Browsers supported by this version - desktop:
- Google Chrome
- Mozilla Firefox 
- Internet Explorer from version 9 to 11 
- MicrosoftEdge 
- Opera 
- Safari
- 
- 
-Browsers supported by this version - mobile:
- Google Chrome
- Mozilla Firefox
- Internet Explorer
- Opera 
- Safari
- UCBrowser
-   - 
 - Installation: like any other JS library.
  
 - Browsers supported by this version - desktop:
