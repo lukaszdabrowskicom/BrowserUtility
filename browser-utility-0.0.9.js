@@ -1,12 +1,13 @@
 /*
- * BrowserUtility JavaScript library v0.0.8
+ * BrowserUtility JavaScript library v0.0.9
  * (c) Łukasz Dąbrowski (https://github.com/lukaszdabrowskicom/BrowserUtility)
  * License: MIT (http://www.opensource.org/licenses/mit-license.php)
  */
 (function (window) {
     'use strict';
     var _currentBrowser = navigator.userAgent;
-
+	var _currentBrowserIsCompatible = true;
+	
     var _mobileBrowserRegex = /mobile/i;
 
     var _chromeRegex = /chrome/i;
@@ -15,6 +16,7 @@
     var _safariRegex = /safari/i;
     var _ucRegex = /ucbrowser/i;
     var _edgeRegex = /edge/i;
+	var _winPhoneRegex = /windows phone/i;
     var _msieEq11Regex = /rv:11\.0/i;
     var _msieLt11Regex = /msie\s\d+\.\d+/i;
 
@@ -27,21 +29,26 @@
     var _isSafari = _safariRegex.test(_currentBrowser);
     var _isbrowsuc = _ucRegex.test(_currentBrowser);
     var _isMicrosoftEdge = _edgeRegex.test(_currentBrowser);
+	var _isWinPhone = _winPhoneRegex.test(_currentBrowser);
     var _isIE11 = _msieEq11Regex.test(_currentBrowser);
-    var _isIELowThen11 = _msieLt11Regex.test(_currentBrowser)
+    var _isIELowThen11 = _msieLt11Regex.test(_currentBrowser);
 
     var _isIE = _isIE11 || _isIELowThen11;
 
     var _versionOfIE = _isIE ? _isIE11 ? _currentBrowser.match(_msieEq11Regex)[0] : _isIELowThen11 ? _currentBrowser.match(_msieLt11Regex)[0] : -1 : -1;
     if (_isIE) {
-        if (_isIE11) {
-            _versionOfIE = parseInt(_versionOfIE.substr(3).trim()); //IE 11
-        }
-        else {
-            _versionOfIE = parseInt(_versionOfIE.substr(4).trim()); // < IE 11
-        }
+		try {
+			if (_isIE11) {
+				_versionOfIE = parseInt(_versionOfIE.substr(3).trim()); //IE 11
+			}
+			else {
+				_versionOfIE = parseInt(_versionOfIE.substr(4).trim()); // < IE 11
+			}
+		}
+		catch(error) {
+			_currentBrowserIsCompatible = false;
+		}
     }
-
     // of all _implementationDetails props only one is set to true, plus 'isMobile' is set to true if run under mobile browser
     var _implementationDetails = {
         notSupportedBrowserMessage: 'This library version does not support current browser yet',
@@ -53,6 +60,8 @@
         uc: _isMobile && _isbrowsuc,
         microsoftEdge: _isMicrosoftEdge && (_isChrome || _isMicrosoftEdge),
         ie: _isIE && !_isChrome,
+		currentBrowserIsCompatible: _currentBrowserIsCompatible,
+		isWindowsPhone: _isWinPhone,
 
         removeUrlFragment: function() {
             setTimeout(removeUrlFragmentInternal, 1);
@@ -63,11 +72,30 @@
         createRedirectionToDesktopVersion: function () {
            return createRedirectionToDesktopVersionInternal();
         },
-    }
+		detectCompatibilityWithCurrentInternetExplorerVersion: function(currentInternetExplorerVersion) {
+			return detectIfCurrentInternetExplorerVersionCanHandleThisPageInternal(currentInternetExplorerVersion);
+		},
+		checkMinAllowedResolution: function(width, height, minRatio, excludeSomeResolutions, resolutionsArray) {
+			var calculatedRatio = width / height;
+			var ratio = Math.round(calculatedRatio * 100) / 100;
+			
+			if(ratio >= minRatio) {
+				if(excludeSomeResolutions) {
+					for(var i = 0; i < resolutionsArray.length; i += 2) {
+					  if(width == resolutionsArray[i] && height == resolutionsArray[i+1])
+						  return false;
+					}
+				}
+				return true;		
+			}
+			return false;
+		}
+    };
+	
     if (_isIE) {
-        _implementationDetails.ieVersion = _versionOfIE
+        _implementationDetails.ieVersion = _versionOfIE;
     }
-
+	
     function removeUrlFragmentInternal() {
         window.history.pushState("#", "", window.location.href.substring(0, window.location.href.length - window.location.hash.length));
     }
@@ -92,6 +120,17 @@
         return mobileUrl;
     }
 
+	function detectIfCurrentInternetExplorerVersionCanHandleThisPageInternal(currentInternetExplorerVersion) {
+		try {
+			if (!_implementationDetails.currentBrowserIsCompatible || _implementationDetails.ie && _implementationDetails.ieVersion < currentInternetExplorerVersion)
+				return false;
+			return true;
+		}
+		catch(error) {
+			return false;
+		}
+    }	
+	
     //public api
     window.activeBrowser = window.activeBrowser || {};
 
