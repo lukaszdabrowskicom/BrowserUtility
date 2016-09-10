@@ -24,7 +24,7 @@
  - Mozilla Firefox 
  - Internet Explorer from version 9 to 11 
  - MicrosoftEdge 
- - Opera 
+ - Opera
  - Safari
  - 
 - Browsers supported by this version - mobile:
