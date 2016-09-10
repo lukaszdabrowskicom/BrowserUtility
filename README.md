@@ -1,4 +1,5 @@
-# Dabrowski Software Development [ JavaScript ] # BrowserUtility
+# Dabrowski Software Development [ JavaScript ] 
+# BrowserUtility
 
 - NEW:
  - *#differentiate devices based on operating system. Currently valid and checked OSes are Windows, Windows Phone, Android*
